@@ -1,0 +1,46 @@
+<launch>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find jackal_helper)/configs/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find jackal_helper)/configs/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find jackal_helper)/configs/params/odom_nav_params/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jackal_helper)/configs/params/odom_nav_params/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find jackal_helper)/configs/params/move_base_params.yaml" command="load" />
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+    <rosparam param="TebLocalPlannerROS">
+      max_vel_x: 2.0
+      max_vel_theta: 2.0
+      acc_lim_x: 2.5
+      acc_lim_theta: 3.2
+      min_turning_radius: 0.0
+      wheelbase: 0.0
+      cmd_angle_instead_rotvel: false
+      footprint_model/type: "circular"
+      footprint_model/radius: 0.3
+      dt_ref: 0.3
+      dt_hysteresis: 0.1
+      min_samples: 3
+      global_plan_overwrite_orientation: true
+      max_global_plan_lookahead_dist: 3.0
+      feasibility_check_no_poses: 5
+      weight_kinematics_nh: 1000.0
+      weight_optimaltime: 1.0
+      weight_obstacle: 50.0
+      inflation_dist: 0.6
+      enable_homotopy_class_planning: true
+      enable_multithreading: true
+      max_number_classes: 4
+      selection_cost_hysteresis: 1.0
+      roadmap_graph_no_samples: 15
+      roadmap_graph_area_width: 5.0
+      h_signature_prescaler: 0.5
+      h_signature_threshold: 0.1
+      obstacle_heading_threshold: 0.45
+      visualize_hc_graph: false
+      obstacle_proximity_ratio_max_vel: 0.5
+      obstacle_proximity_lower_bound: 0.0
+      obstacle_proximity_upper_bound: 0.5
+    </rosparam>
+    <remap from="odom" to="odometry/filtered" />
+  </node>
+</launch>

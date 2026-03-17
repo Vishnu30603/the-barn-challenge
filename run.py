@@ -97,13 +97,16 @@ if __name__ == "__main__":
     ## (Customize this block to add your own navigation stack)
     ##########################################################################################
     
-    launch_file = join(base_path, '..', 'jackal_helper/launch/move_base_DWA.launch')
+    launch_file = join(base_path, '..', 'jackal_helper/launch/move_base_TEB.launch')
     nav_stack_process = subprocess.Popen([
         'roslaunch',
         launch_file,
     ])
     
     # Make sure your navigation stack recives the correct goal position defined in GOAL_POSITION
+    
+    # Launch adaptive controller
+    adaptive_process = subprocess.Popen(["python3", "/jackal_ws/src/the-barn-challenge/adaptive_controller.py"])
     import actionlib
     from geometry_msgs.msg import Quaternion
     from move_base_msgs.msg import MoveBaseGoal, MoveBaseAction
@@ -190,6 +193,8 @@ if __name__ == "__main__":
     with open(args.out, "a") as f:
         f.write("%d %d %d %d %.4f %.4f\n" %(args.world_idx, success, collided, (curr_time - start_time)>=100, curr_time - start_time, nav_metric))
     
+    adaptive_process.terminate()
+    adaptive_process.wait()
     gazebo_process.terminate()
     gazebo_process.wait()
     nav_stack_process.terminate()
